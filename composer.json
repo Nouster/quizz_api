@@ -1,0 +1,23 @@
+{
+    "name": "mohamed/quizz_api",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nouster",
+            "email": "djebali.mohamed88@gmail.com"
+        }
+    ],
+     "scripts": {
+        "start" : "php -S localhost:8000 -t public/ public/index.php"
+    },
+    "config": {
+        "process-timeout": 0
+    },
+    "require": {
+        "symfony/dotenv": "^6.2"
+    }
+}
