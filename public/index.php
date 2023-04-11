@@ -3,6 +3,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\config\DbConfig;
 use App\crud\QuizzCrud;
+use App\exception\ExceptionHandler;
 use Symfony\Component\Dotenv\Dotenv;
 
 
@@ -22,14 +23,7 @@ $resource = $uriParts[1];
 header('Content-type: application/json; charset=UTF-8');
 header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
 
-set_exception_handler(function (Throwable $e) {
-    http_response_code(500);
-    echo json_encode([
-        'error' => 'An error occured',
-        'code' => $e->getCode(),
-        'msg' => $e->getMessage()
-    ]);
-});
+ExceptionHandler::handleException();
 
 
 $crud = new QuizzCrud($pdo);
@@ -70,10 +64,11 @@ if ($uri === '/quizz' && $method === 'POST') {
         echo json_encode([
             "uri" => "/quizz/" . $questionId,
         ]);
-    }catch (Exception $e) {
+    }catch (InvalidArgumentException $e) {
         http_response_code(422);
         echo json_encode([
             "error" => $e->getMessage(),
+            "message" => "Missing required parameters."
         ]);
     }finally {
         exit;
