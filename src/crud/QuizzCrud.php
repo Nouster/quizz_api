@@ -19,7 +19,7 @@ class QuizzCrud
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         $collections = $stmt->fetchAll();
-        return ($collections === false) ? [] : $collections;
+        return $collections ?: [];
     }
 
     public function getOneQuestion(int $id): ?array
