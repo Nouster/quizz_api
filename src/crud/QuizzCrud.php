@@ -2,6 +2,8 @@
 
 namespace App\crud;
 
+use InvalidArgumentException;
+use OutOfBoundsException;
 use PDO;
 
 class QuizzCrud
@@ -22,11 +24,16 @@ class QuizzCrud
 
     public function getOneQuestion(int $id): ?array
     {
+        if($id===0){
+            throw new InvalidArgumentException("The specified ID is not valid.");
+        }
         $query = "SELECT * FROM quizz WHERE id_quizz = :id";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute(['id' => $id]);
+        if (!$stmt->rowCount()) {
+            throw new OutOfBoundsException("The specified ID does not exist.");
+        }
         $item = $stmt->fetch();
         return $item ?? null;
     }
-
 }
