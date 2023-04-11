@@ -24,7 +24,7 @@ header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
 set_exception_handler(function (Throwable $e) {
     http_response_code(500);
     echo json_encode([
-        'error' => 'Une erreur est survenue',
+        'error' => 'An error occured',
         'code' => $e->getCode(),
         'msg' => $e->getMessage()
     ]);
@@ -40,15 +40,14 @@ if($uri === "/quizz" && $method === "GET"){
 
 if ($uriPartsCount === 3 && $uriParts[1] === "quizz" && $method === "GET") {
     $id = intval($uriParts[2]);
+    try{
     echo json_encode($crud->getOneQuestion($id));
-    exit;
-}
-
-$id = intval($uriParts[2]);
-if ($id === 0) {
-    http_response_code(404);
-    echo json_encode([
-        'error' => 'Acteur non trouvé'
-    ]);
+    }catch(InvalidArgumentException $e){
+        http_response_code(400);
+        echo json_encode("The specified ID is not valid.");
+    }catch(OutOfBoundsException $e){
+        http_response_code(404);
+        echo json_encode("The specified ID does not exist.");
+    }
     exit;
 }
