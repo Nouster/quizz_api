@@ -70,7 +70,14 @@ if ($uri === '/quizz' && $method === 'POST') {
             "error" => $e->getMessage(),
             "message" => "Missing required parameters."
         ]);
-    }finally {
+    }catch (RuntimeException $e) {
+        http_response_code(422);
+        echo json_encode([
+            "error"=> $e->getMessage(),
+            "message"=> "Required parameters cannot be empty."
+        ]);
+    }
+    finally {
         exit;
     }
 }

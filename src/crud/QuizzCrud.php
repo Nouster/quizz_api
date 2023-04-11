@@ -5,6 +5,7 @@ namespace App\crud;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use PDO;
+use RuntimeException;
 
 class QuizzCrud
 {
@@ -43,6 +44,9 @@ class QuizzCrud
     {
         if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
             throw new InvalidArgumentException('Missing required parameters.');
+        }
+        if (empty($data['question_quizz']) || empty($data['lvl_quizz']) || empty($data['type_quizz'])) {
+            throw new RuntimeException('Required parameters cannot be empty.');
         }
         $query = "INSERT INTO quizz VALUES (null, :question_quizz, :lvl_quizz, :type_quizz)";
         $stmt = $this->pdo->prepare($query);
