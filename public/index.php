@@ -44,10 +44,18 @@ if ($uriPartsCount === 3 && $uriParts[1] === "quizz" && $method === "GET") {
     echo json_encode($crud->getOneQuestion($id));
     }catch(InvalidArgumentException $e){
         http_response_code(400);
-        echo json_encode("The specified ID is not valid.");
+        echo json_encode([
+            "error" => "An error occured",
+            "code" => 400,
+            "message" => "The specified ID is not valid."
+        ]);
     }catch(OutOfBoundsException $e){
         http_response_code(404);
-        echo json_encode("The specified ID does not exist.");
+        echo json_encode([
+            "error" => "An error occured",
+            "code" => 404,
+            "message" => "The specified ID does not exist."
+        ]);
     }
     exit;
 }
