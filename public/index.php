@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
+
 use App\config\DbConfig;
 use App\crud\QuizzCrud;
 use Symfony\Component\Dotenv\Dotenv;
@@ -33,48 +34,71 @@ set_exception_handler(function (Throwable $e) {
 
 $crud = new QuizzCrud($pdo);
 
-if($uri === "/quizz" && $method === "GET"){
-   echo json_encode($crud->getAllQuestions());
-   exit; 
+if ($uri === "/quizz" && $method === "GET") {
+    echo json_encode($crud->getAllQuestions());
+    exit;
 }
 
 if ($uriPartsCount === 3 && $uriParts[1] === "quizz" && $method === "GET") {
     $id = intval($uriParts[2]);
-    try{
-    echo json_encode($crud->getOneQuestion($id));
-    }catch(InvalidArgumentException $e){
+    try {
+        echo json_encode($crud->getOneQuestion($id));
+    }catch (InvalidArgumentException $e) {
         http_response_code(400);
         echo json_encode([
             "error" => "An error occured",
             "code" => 400,
             "message" => "The specified ID is not valid."
         ]);
-    }catch(OutOfBoundsException $e){
+    }catch (OutOfBoundsException $e) {
         http_response_code(404);
         echo json_encode([
             "error" => "An error occured",
             "code" => 404,
             "message" => "The specified ID does not exist."
         ]);
+    }finally {
+        exit;
     }
-    exit;
 }
 
 if ($uri === '/quizz' && $method === 'POST') {
     try {
-      $data = json_decode(file_get_contents('php://input'), true);
-      $questionId = $crud->createQuestion($data);
-      http_response_code(201);
-      echo json_encode([
-        "uri" => "/quizz/" . $questionId,
-
-      ]);
-    } catch (Exception $e) {
-      http_response_code(422);
-      echo json_encode([
-        "error" => $e->getMessage(),
-      ]);
-    } finally {
-      exit;
+        $data = json_decode(file_get_contents('php://input'), true);
+        $questionId = $crud->createQuestion($data);
+        http_response_code(201);
+        echo json_encode([
+            "uri" => "/quizz/" . $questionId,
+        ]);
+    }catch (Exception $e) {
+        http_response_code(422);
+        echo json_encode([
+            "error" => $e->getMessage(),
+        ]);
+    }finally {
+        exit;
     }
-  }
+}
+
+if ($uriPartsCount === 3 && $uriParts[1] === "quizz" && $method === "DELETE") {
+    try {
+    $id = intval($uriParts[2]);
+    echo json_encode($crud->deleteQuestion($id));
+    }catch (InvalidArgumentException $e){
+        http_response_code(400);
+        echo json_encode([
+            "error" => "An error occured",
+            "code" => 400,
+            "message" => "The specified ID is not valid."
+        ]);
+    }catch (OutOfBoundsException $e){
+        http_response_code(404);
+        echo json_encode([
+            "error" => "An error occured",
+            "code" => 404,
+            "message" => "The specified ID does not exist."
+        ]);
+    }finally {
+        exit;
+    }
+}

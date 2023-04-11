@@ -53,4 +53,18 @@ class QuizzCrud
         ]);
         return $this->pdo->lastInsertId();
     }
+
+    public function deleteQuestion($id): bool
+    {
+        if ($id === 0) {
+            throw new InvalidArgumentException("The specified ID is not valid.");
+        }
+        $query = "DELETE FROM quizz WHERE id_quizz = :id_quizz";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(["id_quizz" => $id]);
+        if (!$stmt->rowCount()) {
+            throw new OutOfBoundsException("The specified ID does not exist.");
+        }
+        return ($stmt->rowCount() > 0);
+    }
 }
