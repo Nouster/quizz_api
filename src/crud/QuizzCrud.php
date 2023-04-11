@@ -24,7 +24,7 @@ class QuizzCrud
 
     public function getOneQuestion(int $id): ?array
     {
-        if($id===0){
+        if ($id === 0) {
             throw new InvalidArgumentException("The specified ID is not valid.");
         }
         $query = "SELECT * FROM quizz WHERE id_quizz = :id";
@@ -35,5 +35,22 @@ class QuizzCrud
         }
         $item = $stmt->fetch();
         return $item ?? null;
+    }
+
+   
+
+    public function createQuestion(array $data): int
+    {
+        if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
+            throw new InvalidArgumentException('Missing required parameters.');
+        }
+        $query = "INSERT INTO quizz VALUES (null, :question_quizz, :lvl_quizz, :type_quizz)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            "question_quizz" => $data['question_quizz'],
+            "lvl_quizz" => $data['lvl_quizz'],
+            "type_quizz" => $data['type_quizz']
+        ]);
+        return $this->pdo->lastInsertId();
     }
 }

@@ -59,3 +59,22 @@ if ($uriPartsCount === 3 && $uriParts[1] === "quizz" && $method === "GET") {
     }
     exit;
 }
+
+if ($uri === '/quizz' && $method === 'POST') {
+    try {
+      $data = json_decode(file_get_contents('php://input'), true);
+      $questionId = $crud->createQuestion($data);
+      http_response_code(201);
+      echo json_encode([
+        "uri" => "/quizz/" . $questionId,
+
+      ]);
+    } catch (Exception $e) {
+      http_response_code(422);
+      echo json_encode([
+        "error" => $e->getMessage(),
+      ]);
+    } finally {
+      exit;
+    }
+  }
