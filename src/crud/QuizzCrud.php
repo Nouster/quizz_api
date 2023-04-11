@@ -20,12 +20,13 @@ class QuizzCrud
         return ($collections === false) ? [] : $collections;
     }
 
-    public function getOneQuestion($id): ?array
+    public function getOneQuestion(int $id): ?array
     {
         $query = "SELECT * FROM quizz WHERE id_quizz = :id";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute(['id' => $id]);
-        $product = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return ($product === false) ? null : $product;
+        $item = $stmt->fetch();
+        return $item ?? null;
     }
+
 }
