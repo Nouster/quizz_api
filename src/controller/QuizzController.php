@@ -28,21 +28,8 @@ class QuizzController
         $this->uriPartsCount = $uriPartsCount;
         $this->crud = new QuizzCrud($pdo);
 
-        if ($uri === "/quizz" && !in_array($this->method, self::ALLOWED_COLLECTION_VERBS)) {
-            http_response_code(405);
-            echo json_encode([
-                'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_COLLECTION_VERBS)
-            ]);
-            exit;
-        }
-
-        if (str_contains($uri, "/quizz/") && !in_array($this->method, self::ALLOWED_RESOURCE_VERBS)) {
-            http_response_code(405);
-            echo json_encode([
-                'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_RESOURCE_VERBS)
-            ]);
-            exit;
-        }
+        $this->checkCollectionVerbs();
+        $this->checkResourceVerbs();
 
         if ($uri === "/quizz" && $method === "GET") {
             try {
@@ -109,6 +96,28 @@ class QuizzController
             } finally {
                 exit;
             }
+        }
+    }
+    
+    private function checkCollectionVerbs()
+    {
+        if ($this->uri === "/quizz" && !in_array($this->method, self::ALLOWED_COLLECTION_VERBS)) {
+            http_response_code(405);
+            echo json_encode([
+                'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_COLLECTION_VERBS)
+            ]);
+            exit;
+        }
+    }
+
+    private function checkResourceVerbs()
+    {
+        if (str_contains($this->uri, "/quizz/") && !in_array($this->method, self::ALLOWED_RESOURCE_VERBS)) {
+            http_response_code(405);
+            echo json_encode([
+                'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_RESOURCE_VERBS)
+            ]);
+            exit;
         }
     }
 }
