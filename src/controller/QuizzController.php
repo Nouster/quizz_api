@@ -34,6 +34,7 @@ class QuizzController
         $this->handleCollectionGet();
         $this->handleResourceGet();
         $this->handleCreateQuestion($this->uri, $this->method);
+        $this->handleUpdateQuestion();
     }
 
     private function checkCollectionVerbs()
