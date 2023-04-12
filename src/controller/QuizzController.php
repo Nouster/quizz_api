@@ -32,27 +32,7 @@ class QuizzController
         $this->checkResourceVerbs();
         $this->handleCollectionGet();
         $this->handleResourceGet();
-
-        if ($uri === "/quizz" && $method === "POST") {
-            $data = json_decode(file_get_contents('php://input'), true);
-            try {
-                json_encode($this->crud->createQuestion($data));
-            } catch (InvalidArgumentException $e) {
-                http_response_code(422);
-                echo json_encode([
-                    "error" => $e->getMessage(),
-                    "message" => "Missing required parameters."
-                ]);
-            } catch (RuntimeException $e) {
-                http_response_code(422);
-                echo json_encode([
-                    "error" => $e->getMessage(),
-                    "message" => "Required parameters cannot be empty."
-                ]);
-            } finally {
-                exit;
-            }
-        }
+        $this->handleCreateQuestion($this->uri, $this->method);
     }
 
     private function checkCollectionVerbs()
@@ -128,4 +108,29 @@ class QuizzController
             }
         }
     }
+
+    public function handleCreateQuestion($uri, $method): void {
+        if ($uri === "/quizz" && $method === "POST") {
+            $data = json_decode(file_get_contents('php://input'), true);
+            try {
+                $question = $this->crud->createQuestion($data);
+                echo json_encode(['Your last question added' => $uri. "/".$question]);
+            } catch (InvalidArgumentException $e) {
+                http_response_code(422);
+                echo json_encode([
+                    "error" => $e->getMessage(),
+                    "message" => "Missing required parameters."
+                ]);
+            } catch (RuntimeException $e) {
+                http_response_code(422);
+                echo json_encode([
+                    "error" => $e->getMessage(),
+                    "message" => "Required parameters cannot be empty."
+                ]);
+            } finally {
+                exit;
+            }
+        }
+    }
+    
 }
