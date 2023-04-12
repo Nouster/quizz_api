@@ -116,7 +116,7 @@ class QuizzController
                     "code" => 400,
                     "message" => "The specified ID is not valid."
                 ]);
-            } catch (OutOfBoundsException) {
+            } catch (OutOfBoundsException $e) {
                 http_response_code(404);
                 echo json_encode([
                     "error" => "An error occured",
