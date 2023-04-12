@@ -110,7 +110,8 @@ class QuizzController
         }
     }
 
-    public function handleCreateQuestion($uri, $method): void {
+    public function handleCreateQuestion($uri, $method): void 
+    {
         if ($uri === "/quizz" && $method === "POST") {
             $data = json_decode(file_get_contents('php://input'), true);
             try {
@@ -131,6 +132,31 @@ class QuizzController
                 ]);
             } finally {
                 exit;
+            }
+        }
+    }
+
+    public function handleUpdateQuestion(): void
+    {
+        if ($this->uriPartsCount === 3 && $this->uriParts[1] === "quizz" && $this->method === "PUT"){
+            $idQuestion = $this->uriParts[2];
+            $data = json_decode(file_get_contents("php://input"), true);
+            try{
+                $this->crud->updateQuestion($data, $idQuestion);
+                http_response_code(StatusCode::UPDATED);
+                echo json_encode(["Resource updated" => $this->uri . "/" . $idQuestion]);
+            } catch (InvalidArgumentException $e){
+                http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
+                echo json_encode([
+                    "error" => $e->getMessage(),
+                    "message" => "Missing required paramaters."
+                ]);
+            } catch (RuntimeException $e){
+                http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
+                echo json_encode([
+                    "error" => $e->getMessage(),
+                    "message" => "Required parameters cannot be empty."
+                ]);
             }
         }
     }

@@ -38,8 +38,6 @@ class QuizzCrud
         return $item ?? null;
     }
 
-   
-
     public function createQuestion(array $data): int
     {
         if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
@@ -56,6 +54,27 @@ class QuizzCrud
             "type_quizz" => $data['type_quizz']
         ]);
         return $this->pdo->lastInsertId();
+    }
+
+    public function updateQuestion(array $data, int $id): bool
+    {
+        if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
+            throw new InvalidArgumentException('Missing required parameters.');
+        }
+        if (empty($data['question_quizz']) || empty($data['lvl_quizz']) || empty($data['type_quizz'])) {
+            throw new RuntimeException('Required parameters cannot be empty.');
+        }
+        $query = "UPDATE quizz SET question_quizz = :question_quizz, lvl_quizz = :lvl_quizz, type_quizz = :type_quizz WHERE id_quizz =:id_quizz";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(
+            [
+                "question_quizz" => $data['question_quizz'],
+                "lvl_quizz" => $data['lvl_quizz'],
+                "type_quizz" => $data['type_quizz'],
+                'id_quizz' => $id
+            ]
+        );
+        return ($stmt->rowCount() > 0);
     }
 
     public function deleteQuestion($id): bool
