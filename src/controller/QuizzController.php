@@ -35,6 +35,7 @@ class QuizzController
         $this->handleResourceGet();
         $this->handleCreateQuestion($this->uri, $this->method);
         $this->handleUpdateQuestion();
+        $this->handleDeleteQuestion();
     }
 
     private function checkCollectionVerbs()
@@ -70,14 +71,14 @@ class QuizzController
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 400,
-                    "message" => "The specified ID is not valid."
+                    "message" => $e->getMessage()
                 ]);
             } catch (OutOfBoundsException $e) {
                 http_response_code(StatusCode::NOT_FOUND);
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 404,
-                    "message" => "The specified ID does not exist."
+                    "message" => $e->getMessage()
                 ]);
             } finally {
                 exit;
@@ -96,14 +97,14 @@ class QuizzController
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 400,
-                    "message" => "The specified ID is not valid."
+                    "message" => $e->getMessage()
                 ]);
             } catch (OutOfBoundsException $e) {
                 http_response_code(StatusCode::NOT_FOUND);
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 404,
-                    "message" => "The specified ID does not exist."
+                    "message" => $e->getMessage()
                 ]);
             } finally {
                 exit;
@@ -111,25 +112,23 @@ class QuizzController
         }
     }
 
-    public function handleCreateQuestion($uri, $method): void 
+    public function handleCreateQuestion($uri, $method): void
     {
         if ($uri === "/quizz" && $method === "POST") {
             $data = json_decode(file_get_contents('php://input'), true);
             try {
                 $question = $this->crud->createQuestion($data);
                 http_response_code(StatusCode::CREATED);
-                echo json_encode(['Your last question added' => $uri. "/".$question]);
+                echo json_encode(['Your last question added' => $uri . "/" . $question]);
             } catch (InvalidArgumentException $e) {
                 http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
-                    "message" => "Missing required parameters."
                 ]);
             } catch (RuntimeException $e) {
                 http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
-                    "message" => "Required parameters cannot be empty."
                 ]);
             } finally {
                 exit;
@@ -139,27 +138,49 @@ class QuizzController
 
     public function handleUpdateQuestion(): void
     {
-        if ($this->uriPartsCount === 3 && $this->uriParts[1] === "quizz" && $this->method === "PUT"){
+        if ($this->uriPartsCount === 3 && $this->uriParts[1] === "quizz" && $this->method === "PUT") {
             $idQuestion = $this->uriParts[2];
             $data = json_decode(file_get_contents("php://input"), true);
-            try{
+            try {
                 $this->crud->updateQuestion($data, $idQuestion);
-                http_response_code(StatusCode::UPDATED);
+                http_response_code(StatusCode::NOCONTENT);
                 echo json_encode(["Resource updated" => $this->uri . "/" . $idQuestion]);
-            } catch (InvalidArgumentException $e){
+            } catch (InvalidArgumentException $e) {
                 http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
-                    "message" => "Missing required paramaters."
                 ]);
-            } catch (RuntimeException $e){
+            } catch (RuntimeException $e) {
                 http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
-                    "message" => "Required parameters cannot be empty."
                 ]);
             }
         }
     }
-    
+
+    public function handleDeleteQuestion(): void
+    {
+        if ($this->uriPartsCount === 3 && $this->uriParts[1] === "quizz" && $this->method === "DELETE") {
+            $idQuestion = $this->uriParts[2];
+            try {
+                $this->crud->deleteQuestion($idQuestion);
+                http_response_code(StatusCode::NOCONTENT);
+                echo json_encode([
+                    "message" => "Question deleted",
+                    "code" => StatusCode::NOCONTENT
+                ]);
+            } catch (InvalidArgumentException $e) {
+                http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
+                echo json_encode([
+                    "error" => $e->getMessage(),
+                ]);
+            } catch (OutOfBoundsException $e) {
+                http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
+                echo json_encode([
+                    "error" => $e->getMessage()
+                ]);
+            }
+        }
+    }
 }

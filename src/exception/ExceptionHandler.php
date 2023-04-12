@@ -14,7 +14,7 @@ class ExceptionHandler
         set_exception_handler(function (Throwable $e) {
             http_response_code(StatusCode::INTERNAL_SERVER_ERROR);
             echo json_encode([
-                'error' => 'Une erreur est survenue',
+                'error' => 'An error occured.',
                 'code' => $e->getCode(),
                 'msg' => $e->getMessage(),
                 'file' => $e->getFile(),
