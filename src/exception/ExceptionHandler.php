@@ -1,6 +1,7 @@
 <?php
 namespace App\exception;
 
+use App\Http\StatusCode;
 use Throwable;
 
 class ExceptionHandler
@@ -11,7 +12,7 @@ class ExceptionHandler
     public static function handleException()
     {
         set_exception_handler(function (Throwable $e) {
-            http_response_code(500);
+            http_response_code(StatusCode::INTERNAL_SERVER_ERROR);
             echo json_encode([
                 'error' => 'Une erreur est survenue',
                 'code' => $e->getCode(),
