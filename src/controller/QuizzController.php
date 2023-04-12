@@ -3,6 +3,7 @@
 namespace App\controller;
 
 use App\crud\QuizzCrud;
+use App\Http\StatusCode;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use PDO;
@@ -38,7 +39,7 @@ class QuizzController
     private function checkCollectionVerbs()
     {
         if ($this->uri === "/quizz" && !in_array($this->method, self::ALLOWED_COLLECTION_VERBS)) {
-            http_response_code(405);
+            http_response_code(StatusCode::METHOD_NOT_ALLOWED);
             echo json_encode([
                 'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_COLLECTION_VERBS)
             ]);
@@ -49,7 +50,7 @@ class QuizzController
     private function checkResourceVerbs()
     {
         if (str_contains($this->uri, "/quizz/") && !in_array($this->method, self::ALLOWED_RESOURCE_VERBS)) {
-            http_response_code(405);
+            http_response_code(StatusCode::METHOD_NOT_ALLOWED);
             echo json_encode([
                 'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_RESOURCE_VERBS)
             ]);
@@ -61,17 +62,17 @@ class QuizzController
     {
         if ($this->uri === "/quizz" && $this->method === "GET") {
             try {
-                http_response_code(200);
+                http_response_code(StatusCode::OK);
                 echo json_encode($this->crud->getAllQuestions());
             } catch (InvalidArgumentException $e) {
-                http_response_code(400);
+                http_response_code(StatusCode::BAD_REQUEST);
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 400,
                     "message" => "The specified ID is not valid."
                 ]);
             } catch (OutOfBoundsException $e) {
-                http_response_code(404);
+                http_response_code(StatusCode::NOT_FOUND);
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 404,
@@ -87,17 +88,17 @@ class QuizzController
         if ($this->uriPartsCount === 3 && $this->uriParts[1] === "quizz" && $this->method === "GET") {
             try {
                 $questionId = $this->uriParts[2];
-                http_response_code(200);
+                http_response_code(StatusCode::OK);
                 echo json_encode($this->crud->getOneQuestion($questionId));
             } catch (InvalidArgumentException $e) {
-                http_response_code(400);
+                http_response_code(StatusCode::BAD_REQUEST);
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 400,
                     "message" => "The specified ID is not valid."
                 ]);
             } catch (OutOfBoundsException $e) {
-                http_response_code(404);
+                http_response_code(StatusCode::NOT_FOUND);
                 echo json_encode([
                     "error" => "An error occured",
                     "code" => 404,
@@ -114,15 +115,16 @@ class QuizzController
             $data = json_decode(file_get_contents('php://input'), true);
             try {
                 $question = $this->crud->createQuestion($data);
+                http_response_code(StatusCode::CREATED);
                 echo json_encode(['Your last question added' => $uri. "/".$question]);
             } catch (InvalidArgumentException $e) {
-                http_response_code(422);
+                http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
                     "message" => "Missing required parameters."
                 ]);
             } catch (RuntimeException $e) {
-                http_response_code(422);
+                http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
                     "message" => "Required parameters cannot be empty."
