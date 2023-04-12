@@ -29,6 +29,7 @@ if (str_contains($uri, "/quizz")) {
     $quizzController = new QuizzController($pdo, $uri, $method, $uriParts, $uriPartsCount);
 }
 
+
 // $crud = new QuizzCrud($pdo);
 
 // if ($uri === "/quizz" && $method === "GET") {
