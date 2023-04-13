@@ -2,7 +2,9 @@
 
 namespace App\crud;
 
+use InvalidArgumentException;
 use PDO;
+use RuntimeException;
 
 abstract class Crud
 {
@@ -24,10 +26,49 @@ abstract class Crud
 
     public function retrieveOne(int $id): ?array
     {
-        $query = "SELECT * FROM $this->table WHERE $this->column[0] = :id";
+        if ($id === 0) {
+            throw new InvalidArgumentException("The specified ID is not valid.");
+        }
+        $query = "SELECT * FROM $this->table WHERE {$this->column[0]} = :id";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute(['id' => $id]);
         $item = $stmt->fetch();
-        return $item ?? null;
+        return $item ?: null;
     }
+
+    public function createItem(array $data): int
+    {
+        if (!isset($data[$this->column[1]], $data[$this->column[2]], $data[$this->column[3]])) {
+            throw new InvalidArgumentException('Missing required parameters.');
+        }
+        if (empty($data[$this->column[1]]) || empty($data[$this->column[2]]) || empty($data[$this->column[3]])) {
+            throw new RuntimeException('Required parameters cannot be empty.');
+        }
+        $query = "INSERT INTO $this->table VALUES (null, :column_2, column_3, column_4)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            $this->column[1] => $data[$this->column[1]],
+            $this->column[2]=> $data[$this->column[2]],
+            $this->column[3] => $data[$this->column[3]]
+        ]);
+        return $this->pdo->lastInsertId();
+    }
+
+    // public function createQuestion(array $data): int
+    // {
+    //     if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
+    //         throw new InvalidArgumentException('Missing required parameters.');
+    //     }
+    //     if (empty($data['question_quizz']) || empty($data['lvl_quizz']) || empty($data['type_quizz'])) {
+    //         throw new RuntimeException('Required parameters cannot be empty.');
+    //     }
+    //     $query = "INSERT INTO quizz VALUES (null, :question_quizz, :lvl_quizz, :type_quizz)";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute([
+    //         "question_quizz" => $data['question_quizz'],
+    //         "lvl_quizz" => $data['lvl_quizz'],
+    //         "type_quizz" => $data['type_quizz']
+    //     ]);
+    //     return $this->pdo->lastInsertId();
+    // }
 }

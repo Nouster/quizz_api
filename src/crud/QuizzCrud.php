@@ -11,7 +11,7 @@ class QuizzCrud extends Crud
     protected string $table = 'quizz';
     protected array $column = ["id_quizz", "question_quizz", "lvl_quizz", "type_quizz"];
 
-   
+
 
     public function retrieveAll(): array
     {
@@ -27,10 +27,16 @@ class QuizzCrud extends Crud
     //     return $collections ?: [];
     // }
 
-        public function retrieveOne(int $id): ?array
-        {
+    public function retrieveOne(int $id): ?array
+    {
+        try {
             return parent::retrieveOne($id);
+        } catch (InvalidArgumentException $e) {
+            echo json_encode([
+                "message" => $e->getMessage()
+            ]);
         }
+    }
 
 
     // public function getOneQuestion(int $id): ?array
@@ -48,23 +54,34 @@ class QuizzCrud extends Crud
     //     return $item ?? null;
     // }
 
-    public function createQuestion(array $data): int
+
+    public function createItem(array $data): int
     {
-        if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
-            throw new InvalidArgumentException('Missing required parameters.');
+        try{
+            return parent::createItem($data);
+        }catch(InvalidArgumentException $e) {
+            echo json_encode([
+                "message" => $e->getMessage()
+            ]);
         }
-        if (empty($data['question_quizz']) || empty($data['lvl_quizz']) || empty($data['type_quizz'])) {
-            throw new RuntimeException('Required parameters cannot be empty.');
-        }
-        $query = "INSERT INTO quizz VALUES (null, :question_quizz, :lvl_quizz, :type_quizz)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            "question_quizz" => $data['question_quizz'],
-            "lvl_quizz" => $data['lvl_quizz'],
-            "type_quizz" => $data['type_quizz']
-        ]);
-        return $this->pdo->lastInsertId();
     }
+    // public function createQuestion(array $data): int
+    // {
+    //     if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
+    //         throw new InvalidArgumentException('Missing required parameters.');
+    //     }
+    //     if (empty($data['question_quizz']) || empty($data['lvl_quizz']) || empty($data['type_quizz'])) {
+    //         throw new RuntimeException('Required parameters cannot be empty.');
+    //     }
+    //     $query = "INSERT INTO quizz VALUES (null, :question_quizz, :lvl_quizz, :type_quizz)";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute([
+    //         "question_quizz" => $data['question_quizz'],
+    //         "lvl_quizz" => $data['lvl_quizz'],
+    //         "type_quizz" => $data['type_quizz']
+    //     ]);
+    //     return $this->pdo->lastInsertId();
+    // }
 
     public function updateQuestion(array $data, int $id): bool
     {

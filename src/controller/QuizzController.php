@@ -119,7 +119,7 @@ class QuizzController
         if ($uri === "/quizz" && $method === "POST") {
             $data = json_decode(file_get_contents('php://input'), true);
             try {
-                $question = $this->crud->createQuestion($data);
+                $question = $this->crud->createItem($data);
                 http_response_code(StatusCode::CREATED);
                 echo json_encode(['Your last question added' => $uri . "/" . $question]);
             } catch (InvalidArgumentException $e) {
