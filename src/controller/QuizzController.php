@@ -144,7 +144,7 @@ class QuizzController
             $idQuestion = $this->uriParts[2];
             $data = json_decode(file_get_contents("php://input"), true);
             try {
-                $this->crud->updateQuestion($data, $idQuestion);
+                $this->crud->updateItem($data, $idQuestion);
                 http_response_code(StatusCode::NOCONTENT);
                 echo json_encode(["Resource updated" => $this->uri . "/" . $idQuestion]);
             } catch (InvalidArgumentException $e) {

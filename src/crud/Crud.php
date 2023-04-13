@@ -54,4 +54,26 @@ abstract class Crud
         return $this->pdo->lastInsertId();
     }
 
-}
+    public function updateItem(array $data, int $id): bool
+    {
+        if (!isset($data[$this->column[1]], $data[$this->column[2]], $data[$this->column[3]])) {
+            throw new InvalidArgumentException('Missing required parameters.');
+        }
+        if (empty($data[$this->column[1]]) || empty($data[$this->column[2]]) || empty($data[$this->column[3]])) {
+            throw new RuntimeException('Required parameters cannot be empty.');
+        }
+
+        $query = "UPDATE $this->table SET {$this->column[1]} = :column_2, {$this->column[2]} = :column_3, {$this->column[3]} = :column_4 WHERE {$this->column[0]} = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            'column_2' => $data[$this->column[1]],
+            'column_3' => $data[$this->column[2]],
+            'column_4' => $data[$this->column[3]],
+            'id' => $id,
+        ]);
+        return($stmt->rowCount() > 0);
+    }
+    }
+
+
+
