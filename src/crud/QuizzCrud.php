@@ -29,13 +29,8 @@ class QuizzCrud extends Crud
 
     public function retrieveOne(int $id): ?array
     {
-        try {
             return parent::retrieveOne($id);
-        } catch (InvalidArgumentException $e) {
-            echo json_encode([
-                "message" => $e->getMessage()
-            ]);
-        }
+
     }
 
 
@@ -57,13 +52,7 @@ class QuizzCrud extends Crud
 
     public function createItem(array $data): int
     {
-        try{
             return parent::createItem($data);
-        }catch(InvalidArgumentException $e) {
-            echo json_encode([
-                "message" => $e->getMessage()
-            ]);
-        }
     }
     // public function createQuestion(array $data): int
     // {
