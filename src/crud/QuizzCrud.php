@@ -7,21 +7,28 @@ use OutOfBoundsException;
 use PDO;
 use RuntimeException;
 
-class QuizzCrud
+class QuizzCrud extends Crud
 {
+    protected string $table = 'quizz';
 
-    public function __construct(private PDO $pdo)
+    public function __construct(PDO $pdo)
     {
+        parent::__construct($pdo);
     }
 
-    public function getAllQuestions(): array
+    public function retrieveAll(): array
     {
-        $query = "SELECT * FROM quizz";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        $collections = $stmt->fetchAll();
-        return $collections ?: [];
+        return $this->retrieveAll();
     }
+
+    // public function getAllQuestions(): array
+    // {
+    //     $query = "SELECT * FROM quizz";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute();
+    //     $collections = $stmt->fetchAll();
+    //     return $collections ?: [];
+    // }
 
     public function getOneQuestion(int $id): ?array
     {

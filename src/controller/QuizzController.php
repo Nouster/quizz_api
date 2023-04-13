@@ -65,7 +65,7 @@ class QuizzController
         if ($this->uri === "/quizz" && $this->method === "GET") {
             try {
                 http_response_code(StatusCode::OK);
-                echo json_encode($this->crud->getAllQuestions());
+                echo json_encode($this->crud->retrieveAll());
             } catch (InvalidArgumentException $e) {
                 http_response_code(StatusCode::BAD_REQUEST);
                 echo json_encode([
