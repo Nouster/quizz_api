@@ -3,6 +3,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\config\DbConfig;
 use App\controller\QuizzController;
+use App\crud\QuizzCrud;
 use App\exception\ExceptionHandler;
 use Symfony\Component\Dotenv\Dotenv;
 

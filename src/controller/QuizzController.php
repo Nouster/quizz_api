@@ -36,9 +36,11 @@ class QuizzController
         $this->handleCreateQuestion($this->uri, $this->method);
         $this->handleUpdateQuestion();
         $this->handleDeleteQuestion();
+
+      
     }
 
-    private function checkCollectionVerbs()
+    private function checkCollectionVerbs(): void
     {
         if ($this->uri === "/quizz" && !in_array($this->method, self::ALLOWED_COLLECTION_VERBS)) {
             http_response_code(StatusCode::METHOD_NOT_ALLOWED);
@@ -49,7 +51,7 @@ class QuizzController
         }
     }
 
-    private function checkResourceVerbs()
+    private function checkResourceVerbs(): void
     {
         if (str_contains($this->uri, "/quizz/") && !in_array($this->method, self::ALLOWED_RESOURCE_VERBS)) {
             http_response_code(StatusCode::METHOD_NOT_ALLOWED);
@@ -60,7 +62,7 @@ class QuizzController
         }
     }
 
-    private function handleCollectionGet()
+    private function handleCollectionGet(): void
     {
         if ($this->uri === "/quizz" && $this->method === "GET") {
             try {
@@ -85,13 +87,13 @@ class QuizzController
             }
         }
     }
-    private function handleResourceGet()
+    private function handleResourceGet(): void
     {
         if ($this->uriPartsCount === 3 && $this->uriParts[1] === "quizz" && $this->method === "GET") {
             try {
                 $questionId = $this->uriParts[2];
                 http_response_code(StatusCode::OK);
-                echo json_encode($this->crud->getOneQuestion($questionId));
+                echo json_encode($this->crud->retrieveOne($questionId));
             } catch (InvalidArgumentException $e) {
                 http_response_code(StatusCode::BAD_REQUEST);
                 echo json_encode([

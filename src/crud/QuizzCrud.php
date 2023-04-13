@@ -4,21 +4,18 @@ namespace App\crud;
 
 use InvalidArgumentException;
 use OutOfBoundsException;
-use PDO;
 use RuntimeException;
 
 class QuizzCrud extends Crud
 {
     protected string $table = 'quizz';
+    protected array $column = ["id_quizz", "question_quizz", "lvl_quizz", "type_quizz"];
 
-    public function __construct(PDO $pdo)
-    {
-        parent::__construct($pdo);
-    }
+   
 
     public function retrieveAll(): array
     {
-        return $this->retrieveAll();
+        return parent::retrieveAll();
     }
 
     // public function getAllQuestions(): array
@@ -30,20 +27,26 @@ class QuizzCrud extends Crud
     //     return $collections ?: [];
     // }
 
-    public function getOneQuestion(int $id): ?array
-    {
-        if ($id === 0) {
-            throw new InvalidArgumentException("The specified ID is not valid.");
+        public function retrieveOne(int $id): ?array
+        {
+            return parent::retrieveOne($id);
         }
-        $query = "SELECT * FROM quizz WHERE id_quizz = :id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['id' => $id]);
-        if (!$stmt->rowCount()) {
-            throw new OutOfBoundsException("The specified ID does not exist.");
-        }
-        $item = $stmt->fetch();
-        return $item ?? null;
-    }
+
+
+    // public function getOneQuestion(int $id): ?array
+    // {
+    //     if ($id === 0) {
+    //         throw new InvalidArgumentException("The specified ID is not valid.");
+    //     }
+    //     $query = "SELECT * FROM quizz WHERE id_quizz = :id";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute(['id' => $id]);
+    //     if (!$stmt->rowCount()) {
+    //         throw new OutOfBoundsException("The specified ID does not exist.");
+    //     }
+    //     $item = $stmt->fetch();
+    //     return $item ?? null;
+    // }
 
     public function createQuestion(array $data): int
     {
