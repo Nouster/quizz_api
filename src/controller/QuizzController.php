@@ -3,6 +3,8 @@
 namespace App\controller;
 
 use App\crud\QuizzCrud;
+use App\exception\EmptyParameterException;
+use App\exception\IdNotFoundException;
 use App\Http\StatusCode;
 use InvalidArgumentException;
 use OutOfBoundsException;
@@ -101,7 +103,7 @@ class QuizzController
                     "code" => 400,
                     "message" => $e->getMessage()
                 ]);
-            } catch (OutOfBoundsException $e) {
+            } catch (IdNotFoundException $e) {
                 http_response_code(StatusCode::NOT_FOUND);
                 echo json_encode([
                     "error" => "An error occured",
@@ -127,7 +129,7 @@ class QuizzController
                 echo json_encode([
                     "error" => $e->getMessage(),
                 ]);
-            } catch (RuntimeException $e) {
+            } catch (EmptyParameterException $e) {
                 http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
@@ -152,11 +154,13 @@ class QuizzController
                 echo json_encode([
                     "error" => $e->getMessage(),
                 ]);
-            } catch (RuntimeException $e) {
+            } catch (EmptyParameterException $e) {
                 http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage(),
                 ]);
+            } finally {
+                exit;
             }
         }
     }
@@ -166,10 +170,10 @@ class QuizzController
         if ($this->uriPartsCount === 3 && $this->uriParts[1] === "quizz" && $this->method === "DELETE") {
             $idQuestion = $this->uriParts[2];
             try {
-                $this->crud->deleteQuestion($idQuestion);
+                $this->crud->deleteItem($idQuestion);
                 http_response_code(StatusCode::NOCONTENT);
                 echo json_encode([
-                    "message" => "Question deleted",
+                    "message" => "Item deleted",
                     "code" => StatusCode::NOCONTENT
                 ]);
             } catch (InvalidArgumentException $e) {
@@ -177,11 +181,14 @@ class QuizzController
                 echo json_encode([
                     "error" => $e->getMessage(),
                 ]);
-            } catch (OutOfBoundsException $e) {
+            } catch (IdNotFoundException $e) {
                 http_response_code(StatusCode::UNPROCESSABLE_CONTENT);
                 echo json_encode([
                     "error" => $e->getMessage()
                 ]);
+            }
+            finally {
+                exit;
             }
         }
     }
