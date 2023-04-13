@@ -12,7 +12,7 @@ use PDO;
 
 class QuizzController
 {
-    private PDO $pdo;
+    public PDO $pdo;
     private string $uri;
     private string $method;
     private array $uriParts;
