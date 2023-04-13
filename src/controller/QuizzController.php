@@ -3,13 +3,12 @@
 namespace App\controller;
 
 use App\crud\QuizzCrud;
+use App\exception\EmptyCollectionException;
 use App\exception\EmptyParameterException;
 use App\exception\IdNotFoundException;
 use App\Http\StatusCode;
 use InvalidArgumentException;
-use OutOfBoundsException;
 use PDO;
-use RuntimeException;
 
 class QuizzController
 {
@@ -77,7 +76,7 @@ class QuizzController
                     "code" => 400,
                     "message" => $e->getMessage()
                 ]);
-            } catch (OutOfBoundsException $e) {
+            } catch (EmptyCollectionException $e) {
                 http_response_code(StatusCode::NOT_FOUND);
                 echo json_encode([
                     "error" => "An error occured",

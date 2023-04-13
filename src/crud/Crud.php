@@ -22,6 +22,9 @@ abstract class Crud
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         $collections = $stmt->fetchAll();
+        if(count($collections)===0){
+            throw new EmptyParameterException("No data found");
+        }
         return $collections ?: [];
     }
 
@@ -30,7 +33,8 @@ abstract class Crud
         if ($id === 0) {
             throw new InvalidArgumentException("The specified ID is not valid.");
         }
-        $query = "SELECT * FROM" . $this->table . "WHERE" . $this->column[0] . "= :id";
+        $query = "SELECT * FROM " . $this->table . " WHERE " . $this->column[0] . " = :id";
+
         $stmt = $this->pdo->prepare($query);
         $stmt->execute(['id' => $id]);
         $item = $stmt->fetch();
