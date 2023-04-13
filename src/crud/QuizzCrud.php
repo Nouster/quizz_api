@@ -4,57 +4,73 @@ namespace App\crud;
 
 use InvalidArgumentException;
 use OutOfBoundsException;
-use PDO;
 use RuntimeException;
 
-class QuizzCrud
+class QuizzCrud extends Crud
 {
+    protected string $table = 'quizz';
+    protected array $column = ["id_quizz", "question_quizz", "lvl_quizz", "type_quizz"];
 
-    public function __construct(private PDO $pdo)
+
+
+    public function retrieveAll(): array
     {
+        return parent::retrieveAll();
     }
 
-    public function getAllQuestions(): array
+    // public function getAllQuestions(): array
+    // {
+    //     $query = "SELECT * FROM quizz";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute();
+    //     $collections = $stmt->fetchAll();
+    //     return $collections ?: [];
+    // }
+
+    public function retrieveOne(int $id): ?array
     {
-        $query = "SELECT * FROM quizz";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        $collections = $stmt->fetchAll();
-        return $collections ?: [];
+            return parent::retrieveOne($id);
+
     }
 
-    public function getOneQuestion(int $id): ?array
-    {
-        if ($id === 0) {
-            throw new InvalidArgumentException("The specified ID is not valid.");
-        }
-        $query = "SELECT * FROM quizz WHERE id_quizz = :id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['id' => $id]);
-        if (!$stmt->rowCount()) {
-            throw new OutOfBoundsException("The specified ID does not exist.");
-        }
-        $item = $stmt->fetch();
-        return $item ?? null;
-    }
 
-    public function createQuestion(array $data): int
+    // public function getOneQuestion(int $id): ?array
+    // {
+    //     if ($id === 0) {
+    //         throw new InvalidArgumentException("The specified ID is not valid.");
+    //     }
+    //     $query = "SELECT * FROM quizz WHERE id_quizz = :id";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute(['id' => $id]);
+    //     if (!$stmt->rowCount()) {
+    //         throw new OutOfBoundsException("The specified ID does not exist.");
+    //     }
+    //     $item = $stmt->fetch();
+    //     return $item ?? null;
+    // }
+
+
+    public function createItem(array $data): int
     {
-        if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
-            throw new InvalidArgumentException('Missing required parameters.');
-        }
-        if (empty($data['question_quizz']) || empty($data['lvl_quizz']) || empty($data['type_quizz'])) {
-            throw new RuntimeException('Required parameters cannot be empty.');
-        }
-        $query = "INSERT INTO quizz VALUES (null, :question_quizz, :lvl_quizz, :type_quizz)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            "question_quizz" => $data['question_quizz'],
-            "lvl_quizz" => $data['lvl_quizz'],
-            "type_quizz" => $data['type_quizz']
-        ]);
-        return $this->pdo->lastInsertId();
+            return parent::createItem($data);
     }
+    // public function createQuestion(array $data): int
+    // {
+    //     if (!isset($data['question_quizz'], $data['lvl_quizz'], $data['type_quizz'])) {
+    //         throw new InvalidArgumentException('Missing required parameters.');
+    //     }
+    //     if (empty($data['question_quizz']) || empty($data['lvl_quizz']) || empty($data['type_quizz'])) {
+    //         throw new RuntimeException('Required parameters cannot be empty.');
+    //     }
+    //     $query = "INSERT INTO quizz VALUES (null, :question_quizz, :lvl_quizz, :type_quizz)";
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute([
+    //         "question_quizz" => $data['question_quizz'],
+    //         "lvl_quizz" => $data['lvl_quizz'],
+    //         "type_quizz" => $data['type_quizz']
+    //     ]);
+    //     return $this->pdo->lastInsertId();
+    // }
 
     public function updateQuestion(array $data, int $id): bool
     {
