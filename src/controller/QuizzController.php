@@ -2,6 +2,7 @@
 
 namespace App\controller;
 
+use App\crud\Crud;
 use App\crud\QuizzCrud;
 use App\exception\EmptyCollectionException;
 use App\exception\EmptyParameterException;
@@ -10,58 +11,32 @@ use App\Http\StatusCode;
 use InvalidArgumentException;
 use PDO;
 
-class QuizzController
+class QuizzController extends Controller
 {
     public PDO $pdo;
-    private string $uri;
-    private string $method;
-    private array $uriParts;
-    private int $uriPartsCount;
-    private QuizzCrud $crud;
+    protected string $uri;
+    protected string $method;
+    protected array $uriParts;
+    protected int $uriPartsCount;
+    protected Crud $crud;
     public const ALLOWED_COLLECTION_VERBS = ["GET", "POST"];
     public const ALLOWED_RESOURCE_VERBS = ["GET", "PUT", "DELETE"];
 
-    public function __construct(PDO $pdo, string $uri, string $method, array $uriParts, int $uriPartsCount)
-    {
-        $this->pdo = $pdo;
-        $this->uri = $uri;
-        $this->method = $method;
-        $this->uriParts = $uriParts;
-        $this->uriPartsCount = $uriPartsCount;
-        $this->crud = new QuizzCrud($pdo);
 
-        $this->checkCollectionVerbs();
-        $this->checkResourceVerbs();
+
+
+
+
+    public function generalHandle(): void
+    {
+        $this->crud = new QuizzCrud($this->pdo);
         $this->handleCollectionGet();
         $this->handleResourceGet();
         $this->handleCreateQuestion($this->uri, $this->method);
         $this->handleUpdateQuestion();
         $this->handleDeleteQuestion();
-
-      
     }
 
-    private function checkCollectionVerbs(): void
-    {
-        if ($this->uri === "/quizz" && !in_array($this->method, self::ALLOWED_COLLECTION_VERBS)) {
-            http_response_code(StatusCode::METHOD_NOT_ALLOWED);
-            echo json_encode([
-                'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_COLLECTION_VERBS)
-            ]);
-            exit;
-        }
-    }
-
-    private function checkResourceVerbs(): void
-    {
-        if (str_contains($this->uri, "/quizz/") && !in_array($this->method, self::ALLOWED_RESOURCE_VERBS)) {
-            http_response_code(StatusCode::METHOD_NOT_ALLOWED);
-            echo json_encode([
-                'error' => 'Verbs HTTP allowed are : ' . implode(", ", self::ALLOWED_RESOURCE_VERBS)
-            ]);
-            exit;
-        }
-    }
 
     private function handleCollectionGet(): void
     {
@@ -185,8 +160,7 @@ class QuizzController
                 echo json_encode([
                     "error" => $e->getMessage()
                 ]);
-            }
-            finally {
+            } finally {
                 exit;
             }
         }

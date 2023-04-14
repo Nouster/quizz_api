@@ -27,7 +27,9 @@ ExceptionHandler::handleException();
 
 if (str_contains($uri, "/quizz")) {
     $quizzController = new QuizzController($pdo, $uri, $method, $uriParts, $uriPartsCount);
+    $quizzController->generalHandle();
 }
+
 
 
 // $crud = new QuizzCrud($pdo);
