@@ -73,4 +73,4 @@ This method deletes a record from the database table based on the provided ID an
 - The checkCollectionVerbs() method checks if the HTTP method used is allowed for collections. If it is not, an OperationNotAllowedException exception is thrown.
 - The checkResourceVerbs() method checks if the HTTP method used is allowed for resources. If it is not, an OperationNotAllowedException exception is thrown.
 
-> **warning:** It should be noted that this class is abstract, which means it cannot be directly instantiated. It must be extended by child classes that implement specific methods for collections and resources.
+:warning: It should be noted that this class is abstract, which means it cannot be directly instantiated. It must be extended by child classes that implement specific methods for collections and resources.
