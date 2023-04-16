@@ -2,7 +2,49 @@
 An API that provides questions about web development in general
 
 ## Class documentation
-The Crud class is an abstract class that serves aÂÂÂÂs a base class for implementing CRUD (Create, Read, Update, Delete) operations in PHP using PDO (PHP Data Objects). The class defines the basic CRUD operations that can be used to interact with a database.
+The Crud class is an abstract class that serves a base class for implementing CRUD (Create, Read, Update, Delete) operations in PHP using PDO (PHP Data Objects). The class defines the basic CRUD operations that can be used to interact with a database.
 
-Class Structure
+### Class Structure
 The Crud class is defined in the namespace App\crud. The class is abstract and has the following structure:
+
+The class has the following properties:
+
+$column: An array that contains the names of the columns in the database table.
+$table: A string that contains the name of the database table.
+$pdo: An instance of the PDO class that is used to connect to the database.
+The class has the following methods:
+
+__construct(PDO $pdo): Constructor method that accepts an instance of the PDO class and initializes the $pdo property.
+retrieveAll(): array: Method that retrieves all records from the database table.
+retrieveOne(int $id): ?array: Method that retrieves a single record from the database table based on the provided ID.
+createItem(array $data): int: Method that creates a new record in the database table and returns the ID of the new record.
+updateItem(array $data, int $id): bool: Method that updates an existing record in the database table based on the provided ID and returns true if the update was successful.
+deleteItem(int $id): bool: Method that deletes a record from the database table based on the provided ID and returns true if the delete was successful.
+
+### Method Details
+retrieveAll(): array
+This method retrieves all records from the database table and returns an array of records.
+
+If there are no records in the table, an EmptyParameterException is thrown.
+
+retrieveOne(int $id): ?array
+This method retrieves a single record from the database table based on the provided ID and returns an array containing the record.
+
+If the specified ID is not valid, an InvalidArgumentException is thrown.
+
+If the specified ID does not exist in the database, an IdNotFoundException is thrown.
+
+createItem(array $data): int
+This method creates a new record in the database table using the provided data and returns the ID of the new record.
+
+If any of the required parameters are missing or empty, an InvalidArgumentException or an EmptyParameterException is thrown, respectively.
+
+updateItem(array $data, int $id): bool
+This method updates an existing record in the database table based on the provided ID and returns true if the update was successful.
+
+If any of the required parameters are missing or empty, an InvalidArgumentException or an EmptyParameterException is thrown, respectively.
+
+If the specified ID is not valid, an InvalidArgumentException is thrown.
+
+deleteItem(int $id): bool
+This method deletes a record from the database table based on the provided ID and returns true if the delete was successful.
