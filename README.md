@@ -12,17 +12,17 @@ The Crud class is defined in the namespace App\crud. The class is abstract and h
 
 The class has the following properties:
 
-$column: An array that contains the names of the columns in the database table.
-$table: A string that contains the name of the database table.
-$pdo: An instance of the PDO class that is used to connect to the database.
+- $column: An array that contains the names of the columns in the database table.
+- $table: A string that contains the name of the database table.
+- $pdo: An instance of the PDO class that is used to connect to the database.
 The class has the following methods:
 
-__construct(PDO $pdo): Constructor method that accepts an instance of the PDO class and initializes the $pdo property.
-retrieveAll(): array: Method that retrieves all records from the database table.
-retrieveOne(int $id): ?array: Method that retrieves a single record from the database table based on the provided ID.
-createItem(array $data): int: Method that creates a new record in the database table and returns the ID of the new record.
-updateItem(array $data, int $id): bool: Method that updates an existing record in the database table based on the provided ID and returns true if the update was successful.
-deleteItem(int $id): bool: Method that deletes a record from the database table based on the provided ID and returns true if the delete was successful.
+- __construct(PDO $pdo): Constructor method that accepts an instance of the PDO class and initializes the $pdo property.
+- retrieveAll(): array: Method that retrieves all records from the database table.
+- retrieveOne(int $id): ?array: Method that retrieves a single record from the database table based on the provided ID.
+- createItem(array $data): int: Method that creates a new record in the database table and returns the ID of the new record.
+- updateItem(array $data, int $id): bool: Method that updates an existing record in the database table based on the provided ID and returns true if the update was successful.
+- deleteItem(int $id): bool: Method that deletes a record from the database table based on the provided ID and returns true if the delete was successful.
 
 ### Class Structure (*Controller*)
 
