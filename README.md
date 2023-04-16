@@ -1,10 +1,13 @@
 # quizz_api
 An API that provides questions about web development in general
 
-## Class documentation
+## Class documentation (*CRUD*)
 The Crud class is an abstract class that serves a base class for implementing CRUD (Create, Read, Update, Delete) operations in PHP using PDO (PHP Data Objects). The class defines the basic CRUD operations that can be used to interact with a database.
 
-### Class Structure
+## Class documentation (*CONTROLLER*)
+The Controller class is an abstract Controller class belonging to the App\controller namespace. This class serves as a base for creating controllers that handle incoming HTTP requests.
+
+### Class Structure (*Crud*)
 The Crud class is defined in the namespace App\crud. The class is abstract and has the following structure:
 
 The class has the following properties:
@@ -20,6 +23,20 @@ retrieveOne(int $id): ?array: Method that retrieves a single record from the dat
 createItem(array $data): int: Method that creates a new record in the database table and returns the ID of the new record.
 updateItem(array $data, int $id): bool: Method that updates an existing record in the database table based on the provided ID and returns true if the update was successful.
 deleteItem(int $id): bool: Method that deletes a record from the database table based on the provided ID and returns true if the delete was successful.
+
+### Class Structure (*Controller*)
+
+The Controller class has the following properties:
+
+- protected const ACCEPTED_COLLECTION_METHODS: A constant that defines an array containing the accepted HTTP methods for collections. In this case, it is GET and POST.
+- protected const ACCEPTED_RESOURCE_METHODS: A constant that defines an array containing the accepted HTTP methods for resources. In this case, it is GET, PUT, and DELETE.
+- protected Crud $crud: A Crud object that is used to perform CRUD (Create, Read, Update, Delete) operations on the database.
+- protected PDO $pdo: A PDO object that represents the connection to the database.
+- protected string $uri: The URI query string sent in the HTTP request.
+- protected string $method: The HTTP method used for the request.
+- protected array $uriParts: An array containing the different parts of the URI query string.
+- protected int $uriPartsCount: The number of parts in the URI query string.
+
 
 ### Method Details
 retrieveAll(): array
