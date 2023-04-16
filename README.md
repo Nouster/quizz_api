@@ -38,7 +38,7 @@ The Controller class has the following properties:
 - protected int $uriPartsCount: The number of parts in the URI query string.
 
 
-### Method Details
+### Method Details (*Crud*)
 retrieveAll(): array
 This method retrieves all records from the database table and returns an array of records.
 
@@ -65,3 +65,12 @@ If the specified ID is not valid, an InvalidArgumentException is thrown.
 
 deleteItem(int $id): bool
 This method deletes a record from the database table based on the provided ID and returns true if the delete was successful.
+
+
+### Method Details (*Controller*)
+
+- The __construct() method is used to initialize the class properties from the passed parameters. This method also calls the checkCollectionVerbs() and checkResourceVerbs() methods to ensure that the HTTP method used is valid.
+- The checkCollectionVerbs() method checks if the HTTP method used is allowed for collections. If it is not, an OperationNotAllowedException exception is thrown.
+- The checkResourceVerbs() method checks if the HTTP method used is allowed for resources. If it is not, an OperationNotAllowedException exception is thrown.
+
+> **warning:** It should be noted that this class is abstract, which means it cannot be directly instantiated. It must be extended by child classes that implement specific methods for collections and resources.
